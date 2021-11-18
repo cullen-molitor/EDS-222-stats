@@ -327,7 +327,7 @@ Long-term increase or decrease in the data (not necessarily linear!)
 ---
 # Time series components
 
-### Often, seasonality, cyclicality and trends occur all at the same time:
+#### Often, seasonality, cyclicality and trends occur all at the same time:
 
 &lt;img src="07-timeseries_files/figure-html/decomp1-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
@@ -336,7 +336,7 @@ Long-term increase or decrease in the data (not necessarily linear!)
 
 For many time series,&lt;sup&gt;*&lt;/sup&gt; we can decompose the data into:
 
-`$$y_t = S_t + T_t + R_t$$`,
+`$$y_t = S_t + T_t + R_t$$`
 
 where `\(S_t\)` is a **seasonal** component, `\(T_t\)` is the cycle _and_ trend components, and `\(R_t\)` is the remainder.
 
@@ -347,6 +347,7 @@ where `\(S_t\)` is a **seasonal** component, `\(T_t\)` is the cycle _and_ trend 
 .footnote[
 [*]: This decomposition is "additive", which works for many time series. See [Hyndman](https://otexts.com/fpp3/) for details on more complex "multiplicative" decomposition.
 ]
+
 ---
 # Decomposition: Moving averages
 
@@ -354,9 +355,9 @@ A key tool in "decomposing" a time series into its component parts is computing 
 
 --
 
-A moving average of order _m_ is computed as: 
+A moving average of order _m_ is computed as:
 
-$$ \hat T_t = \frac{1}{m}\sum_{j=-k}^{k}y_{t+j} $$
+`$$\hat T_t = \frac{1}{m}\sum_{j=-k}^{k}y_{t+j}$$`
 
 where `\(m = 2k+1\)`.
 
@@ -419,13 +420,9 @@ Whatever is left over
 
 Consider a time series of monthly totals of accidental deaths in the USA:
 
+`df = USAccDeaths`
 
-```r
-head(USAccDeaths)
-#&gt; [1]  9007  8106  8928  9137 10017 10826
-```
-
-&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-9-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-8-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
 ---
 # Classical decomposition
@@ -472,14 +469,14 @@ as_tsibble(USAccDeaths) %&gt;%
   labs(title = "Classical additive decomposition of accidental deaths in the USA")
 ```
 
-&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-11-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-10-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
 ---
 # Classical decomposition
 
 ### You can do this by hand, or...
 
-&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-12-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-11-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -512,7 +509,7 @@ as_tsibble(USAccDeaths) %&gt;%
 
 2. To aid in **forecasting**
   + You can forecast using estimated seasonality and trend-cycles
-  + Details are not covered in this class, see Hyndman &amp; Athanasopoulos for details.
+  + Details are not covered in this class, see Hyndman &amp; Athanasopoulos for an overview and implementation in `R`
 
 ---
 layout: false
@@ -556,7 +553,7 @@ We can describe autocorrelation using an **autocorrelation function** or ACF.
 
 Consider a **monthly** temperature time series for Nottingham Castle
 
-&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-13-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-12-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
 ---
 # Autocorrelation Function (ACF)
@@ -566,7 +563,7 @@ Consider a **monthly** temperature time series for Nottingham Castle
 acf(nottdf$temperature, lag.max=12)
 ```
 
-&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-14-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-13-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
 ---
 # Autocorrelation Function (ACF)
@@ -630,7 +627,7 @@ where `\(t-1\)` denotes the time period prior to `\(t\)` (*lagged* income or bir
 
 1. There is **some variation** in our explanatory variables
 
-1.  .hi[Harder to satisfy:]The `\(u_t\)` have conditional mean of zero (**exogeneity**), `\(\mathop{\boldsymbol{E}}\left[ u_t \middle| X \right] = 0\)`.
+1.  .hi[Harder to satisfy:] The `\(u_t\)` have conditional mean of zero (**exogeneity**), `\(\mathop{\boldsymbol{E}}\left[ u_t \middle| X \right] = 0\)`.
 
 1.  .hi[Harder to satisfy:] The `\(u_t\)` are **normally distributed** and **homoskedastic** with **zero correlation** between `\(u_t\)` and `\(u_s\)`, _i.e._, `\(u_t\overset{\text{iid}}{\sim}\mathop{N}\left( 0,\,\sigma^2 \right)\)`, `\(\mathop{\text{Var}} \left( u_t | X \right) = \mathop{\text{Var}} \left( u_t \right) = \sigma^2\)`, and `\(\mathop{\text{Cor}} \left( u_t,\,u_s \middle| X \right) = 0\)`.
 
@@ -705,6 +702,21 @@ Estimate *total* effects by summing lags' coefficients, _e.g._, `\(\beta_1 + \be
 --
 
 *Note:* We still assume current births don't affect future births.
+
+---
+# Model options
+
+Lagged explanatory variables in empirical research:
+
+&lt;img src="lagged_indep_var.png" width="95%" style="display: block; margin: auto;" /&gt;
+
+- **Left:** coefficients on lagged temperature variables
+- **Right:** sum of coefficients (cumulative effect) on cyclone intensity
+
+--
+
+&gt; Q: Can you think of other examples of lagged effects?
+
 ---
 # Model options
 
@@ -723,6 +735,13 @@ Here, current income affects affects .hi[current] births and .hi-purple[future] 
 --
 
 In addition, .purple[current births affect future births]—we're allowing lags of the outcome variable.
+
+---
+# Do you need an ADL?
+
+## Hint: Autocorrelation Function (ACF)
+
+&lt;img src="07-timeseries_files/figure-html/unnamed-chunk-14-1.svg" width="100%" style="display: block; margin: auto;" /&gt;
 
 ---
 # Autoregressive distributed-lag models
@@ -827,6 +846,20 @@ $$
 By including just **one lag of the dependent variable**—as in a ADL(1, 0)—we implicitly include for *many lags* of the explanatory variables and disturbances.&lt;sup&gt;.pink[†]&lt;/sup&gt;
 
 .footnote[.pink[†] These lags enter into the equation in a very specific way—not the most flexible specification.]
+
+---
+# Time-series models
+## Assumptions
+
+1. .hi[New:] **Weakly persistent outcomes**—essentially, `\(x_{t+k}\)` in the distant period `\(t+k\)` is weakly correlated with period `\(x_t\)` (when `\(k\)` is "big").
+
+1. `\(y_t\)` is a **linear function** of its parameters and disturbance.
+
+1. There is **some variation** in our explanatory variables
+
+1.  .hi[Harder to satisfy:] The `\(u_t\)` have conditional mean of zero (**exogeneity**), `\(\mathop{\boldsymbol{E}}\left[ u_t \middle| X \right] = 0\)`.
+
+1.  .hi[Harder to satisfy:] The `\(u_t\)` are **normally distributed** and **homoskedastic** with **zero correlation** between `\(u_t\)` and `\(u_s\)`, _i.e._, `\(u_t\overset{\text{iid}}{\sim}\mathop{N}\left( 0,\,\sigma^2 \right)\)`, `\(\mathop{\text{Var}} \left( u_t | X \right) = \mathop{\text{Var}} \left( u_t \right) = \sigma^2\)`, and `\(\mathop{\text{Cor}} \left( u_t,\,u_s \middle| X \right) = 0\)`.
 
 ---
 # Unbiased coefficients
